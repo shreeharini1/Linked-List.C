@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a ticket
+struct ticket {
+    int number;
+    struct ticket *link;
+};
+
+// Function to append a ticket to the list
+void append(struct ticket **head, int num) {
+    struct ticket *new_node = (struct ticket *)malloc(sizeof(struct ticket));
+    new_node->number = num;
+    new_node->link = NULL;
+
+    if (*head == NULL) {
+        *head = new_node;
+    } else {
+        struct ticket *temp = *head;
+        while (temp->link != NULL) {
+            temp = temp->link;
+        }
+        temp->link = new_node;
+    }
+}
+
+// Function to display the current seating position
+void display(struct ticket *head) {
+    if (head == NULL) {
+        printf("Seating position are: None\n");
+        return;
+    }
+
+    printf("Seating position are:");
+    while (head != NULL) {
+        printf(" %d", head->number);
+        head = head->link;
+    }
+    printf(" \n");
+}
+
+// Function to add a ticket after a specific position
+void addafter(struct ticket *head, int pos, int num) {
+    struct ticket *temp = head;
+    int count = 1;
+
+    // Traverse to find the correct position
+    while (temp != NULL && count < pos) {
+        temp = temp->link;
+        count++;
+    }
+
+    if (temp == NULL) {
+        printf("No body has occupied ticket number %d at position %d.\n", num, pos);
+        return;
+    }
+
+    struct ticket *new_node = (struct ticket *)malloc(sizeof(struct ticket));
+    new_node->number = num;
+    new_node->link = temp->link;
+    temp->link = new_node;
+
+    printf("Adjacent seat is given for the original person\n");
+}
+
+int main() {
+    struct ticket *head = NULL;
+    int choice, ticket_num, pos;
+
+    while (1) {
+        printf("1.Enter ticket number occupying wrong seat\n");
+        printf("2.Arrange the seating position\n");
+        printf("3.Display current seating position\n");
+        printf("4.Exit\n");
+        printf("Enter your choice\n");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter the ticket number\n");
+                scanf("%d", &ticket_num);
+                append(&head, ticket_num);
+                break;
+
+            case 2:
+                printf("Enter the position of the ticket\n");
+                scanf("%d", &pos);
+                printf("Enter the ticket number\n");
+                scanf("%d", &ticket_num);
+                addafter(head, pos, ticket_num);
+                break;
+
+            case 3:
+                display(head);
+                break;
+
+            case 4:
+                printf("Exit\n");
+                return 0;
+
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+}
