@@ -1,0 +1,117 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for an employee
+struct employee {
+    int id;
+    struct employee *link;
+};
+
+// Function to append an employee to the list
+void append(struct employee **head, int id) {
+    struct employee *new_node = (struct employee *)malloc(sizeof(struct employee));
+    if(new_node==NULL){
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+    new_node->id = id;
+    new_node->link = NULL;
+
+    if (*head == NULL) {
+        *head = new_node;
+    } else {
+        struct employee *temp = *head;
+        while (temp->link != NULL) {
+            temp = temp->link;
+        }
+        temp->link = new_node;
+    }
+}
+
+// Function to display the employee IDs
+void display(struct employee *head) {
+    if (head == NULL) {
+        printf("Employees ID list is empty\n");
+        return;
+    }
+
+    printf("Employees ID list:\n");
+    while (head != NULL) {
+        printf("%d\n", head->id);
+        head = head->link;
+    }
+}
+
+// Function to delete an employee by ID
+void deleteanyelement(struct employee **head, int id) {
+    struct employee *temp = *head, *prev = NULL;
+
+    // If the head node itself holds the ID to be deleted
+    if (temp != NULL && temp->id == id) {
+        *head = temp->link; // Update head
+        free(temp);         // Free the old head
+        printf("Employee ID are removed from the Company.\n");
+       
+        return;
+    }
+
+    // Search for the ID to be deleted
+    while (temp != NULL && temp->id != id) {
+        prev = temp;
+        temp = temp->link;
+    }
+
+    // If ID was not found in the list
+    if (temp == NULL) {
+        printf("Employee ID %d is not found\n", id);
+     
+        return;
+    }
+
+    // Unlink the node from the linked list
+    prev->link = temp->link;
+    free(temp);
+    printf("Employee ID are  removed from the Company.\n");
+
+}
+
+int main() {
+    struct employee *head = NULL;
+    int choice, id;
+
+    while (1) {
+        printf("1.Insert a new Employee\n");
+        printf("2.Display the Employees\n");
+        printf("3.Remove an Employee ID\n");
+        printf("4.Exit\n");
+        printf("Enter your choice\n");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter an Employee id\n");
+                scanf("%d", &id);
+                append(&head, id);
+                break;
+
+            case 2:
+                display(head);
+                break;
+
+            case 3:
+                printf("Enter an Employee id to be removed\n");
+                scanf("%d", &id);
+                deleteanyelement(&head, id);
+                display(head);
+                break;
+
+            case 4:
+                printf("Exit\n");
+                return 0;
+
+            default:
+                printf("Enter a valid choice\n");
+                break;
+        }
+    }
+}
