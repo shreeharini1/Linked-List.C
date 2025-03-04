@@ -1,0 +1,86 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a keyboard key
+struct keyboard {
+    int key;
+    struct keyboard *link;
+};
+
+// Function to insert keys in ascending order
+void insert(struct keyboard **head, int num) {
+    struct keyboard *new_node = (struct keyboard *)malloc(sizeof(struct keyboard));
+    new_node->key = num;
+    new_node->link = NULL;
+
+    // If the list is empty or the new node should be the first node
+    if (*head == NULL || (*head)->key > num) {
+        new_node->link = *head;
+        *head = new_node;
+    } else {
+        struct keyboard *current = *head;
+
+        // Traverse to find the correct position
+        while (current->link != NULL && current->link->key < num) {
+            current = current->link;
+        }
+
+        // Insert the new node
+        new_node->link = current->link;
+        current->link = new_node;
+    }
+}
+
+// Function to display the keys
+void display(struct keyboard *head) {
+    if (head == NULL) {
+        printf("Keyboard has no disassembled key\n");
+        return;
+    }
+
+    printf("Keyboard:\n");
+    while (head != NULL) {
+        printf("%d ", head->key);
+        head = head->link;
+    }
+    printf("\n");
+}
+
+int main() {
+    struct keyboard *head = NULL;
+    int choice, key;
+
+    while (1) {
+        printf("1.Enter a disassembled key\n");
+        printf("2.View keyboard\n");
+        printf("3.Exit\n");
+        printf("Enter your choice\n");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter the key number\n");
+                scanf("%d", &key);
+                
+                // Validate key range
+                while (key < 0 || key > 9) {
+                    printf("Enter the key number\n");
+                    scanf("%d", &key);
+                }
+
+                insert(&head, key);
+                break;
+
+            case 2:
+                display(head);
+                break;
+
+            case 3:
+                printf("Exit\n");
+                return 0;
+
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+}
